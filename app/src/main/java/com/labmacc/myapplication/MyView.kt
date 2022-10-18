@@ -20,8 +20,8 @@ const val TAG = "MYDEBUG"
 
 class MyView(context: Context?) : View(context),SensorEventListener2 {
 
-    val size = 1000 //Size in pixels of the compass
-    val a = 0.9f //Low-pass filter
+    var size = 2f  //Absolute size of the compass in inches
+    val a = 0.9f //Low-pass filter parameter, higher is smoother
 
     var mLastRotationVector = FloatArray(3) //The last value of the rotation vector
     var mRotationMatrix = FloatArray(9)
@@ -29,8 +29,9 @@ class MyView(context: Context?) : View(context),SensorEventListener2 {
     var compass : Bitmap
 
     init {
+        size*=160*resources.displayMetrics.density
         val sensorManager = context?.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-
+        Log.i(TAG,""+resources.displayMetrics.density)
         //Register the rotation vector sensor to the listener
         sensorManager.registerListener(
             this,  //use this since MyView implements the listener interface
@@ -40,7 +41,7 @@ class MyView(context: Context?) : View(context),SensorEventListener2 {
         //Read .svg compass
         compass = ResourcesCompat.getDrawable(resources,R.drawable.compass,
             null)?.
-        toBitmap(size,size)!!
+        toBitmap(size.toInt(),size.toInt())!!
     }
 
 
